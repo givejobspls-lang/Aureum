@@ -121,12 +121,18 @@ class BaselineMarketMaker(StrategyInterface):
         self.order_quantity = order_quantity
         self.inventory: float = 0.0
 
-    def record_fill(self, action: str, quantity: float) -> None:
-        """
-        Called externally (by whatever drives the backtest loop) after
-        a fill actually happens, so the strategy's inventory tracking
-        matches reality rather than assuming every quote fills.
-        """
+   def record_fill(self, action: str, quantity: float) -> None:
+    """
+    Called externally (by whatever drives the backtest loop) after
+    a fill actually happens, so the strategy's inventory tracking
+    matches reality rather than assuming every quote fills.
+
+    TIMING REQUIREMENT: must be called before the next decide() call
+    for this same strategy instance if that decision should reflect
+    the updated inventory. No internal queueing - self.inventory is
+    read synchronously inside decide(). Confirmed with Gauri during
+    paper-exchange wiring (Phase 5).
+    """
         if action == "buy":
             self.inventory += quantity
         elif action == "sell":
