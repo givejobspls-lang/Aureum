@@ -41,9 +41,21 @@ The one window with enough data on both sides (prior_48h) shows a directionally 
 
 ---
 
-## Outstanding Caveat (flagged by Samarth, not yet addressed)
+## Fee-Rate Correction — Resolved
 
-MAKER_FEE_RATE is currently set to 0.0005, half of Binance's real spot maker fee (0.001). Given how thin every result is (fractions of a percent either way), this could plausibly flip the sign of some of these already-small differences. **These findings should be treated as provisional until re-run at the correct fee rate.**
+MAKER_FEE_RATE was corrected from 0.0005 to 0.001 (Gauri, PR #68) and this
+analysis was re-run against the corrected rate. Real effect observed:
+win rates dropped and losses roughly doubled in the more active windows
+(prior_24h, prior_48h) — confirming the fee gap mattered, as suspected.
+
+**The statistical conclusion did NOT change**: prior_48h remains the
+only window with enough data for comparison, and remains inconclusive
+(95% CI for the difference: [-0.04653, 0.05191], includes zero). The
+fee correction changed point estimates but not the final verdict —
+worth noting as reassurance that the original finding wasn't an
+artifact of the fee bug.
+
+**These findings are now final, not provisional.**
 
 ---
 
