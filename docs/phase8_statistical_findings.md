@@ -58,6 +58,19 @@ artifact of the fee bug.
 **These findings are now final, not provisional.**
 
 ---
+---
+
+## Independent Verification (Hansika, 2026-09-03)
+
+Regenerated all 6 datasets fresh from the pinned windows and re-ran
+`research/run_phase8_comparison.py` independently, without relying on
+Samarth's stated numbers. Result matched exactly: prior_48h difference
+CI = [-0.04653, 0.05191], identical to the value reported above.
+recent_24h and prior_24h correctly still cannot be compared (AI
+variant had only 1 closing trade in each, unchanged by the fee fix).
+
+This confirms the fee-corrected findings are genuine and reproducible,
+not a copy-paste or a single unverified run.
 
 ## Recommendation
 
