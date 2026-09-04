@@ -45,4 +45,9 @@ fix_comparison_evaluation.py
 fix_dead_duplicate.py
 print_comparison.py
 print_full_comparison.py
+view_full_comparison_file.pycheck_threshold_calibration.py 
+check_adapter_interface.py
+check_threshold_calibration.py
+check_timescale_status.py
+find_phase8_comparison_runner.py
 view_full_comparison_file.py
