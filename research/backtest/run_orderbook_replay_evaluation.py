@@ -21,16 +21,21 @@ STARTING_CASH = 10_000.0
 MAKER_FEE_RATE = 0.001
 
 
-def run_replay_evaluation(strategy_factory, run_name: str, strategy_name: str) -> dict:
-    candles_df = load_dataset("raw", CANDLE_DATASET)
+def run_replay_evaluation(
+    strategy_factory, run_name: str, strategy_name: str,
+    candle_dataset: str = CANDLE_DATASET,
+    snapshot_dataset: str = SNAPSHOT_DATASET,
+    deltas_dataset: str = DELTAS_DATASET,
+) -> dict:
+    candles_df = load_dataset("raw", candle_dataset)
     candles = [Candle(**row) for row in candles_df.to_dict(orient="records")]
     candles.sort(key=lambda c: c.close_time)
-    print(f"Loaded {len(candles)} candles from {CANDLE_DATASET!r}")
+    print(f"Loaded {len(candles)} candles from {candle_dataset!r}")
 
     symbol = candles[0].symbol
 
-    snapshot_df = load_dataset("raw", SNAPSHOT_DATASET)
-    deltas_df = load_dataset("raw", DELTAS_DATASET)
+    snapshot_df = load_dataset("raw", snapshot_dataset)
+    deltas_df = load_dataset("raw", deltas_dataset)
     checkpoints = build_replay_index(snapshot_df, deltas_df, symbol=symbol)
     print(f"Built {len(checkpoints)} order-book replay checkpoints")
     strategy = strategy_factory(symbol)
@@ -63,20 +68,20 @@ def run_replay_evaluation(strategy_factory, run_name: str, strategy_name: str) -
                 continue
             fills_attempted += 1
 
-            fill_result = match_limit_order(
+            fill = match_limit_order(
                 book_state, side=signal.action,
                 quantity=signal.quantity, limit_price=signal.price,
             )
-            if fill_result is None:
+            if fill is None:
                 continue
 
-            fill_price, fill_quantity = fill_result
-            fee = fill_price * fill_quantity * MAKER_FEE_RATE
+            # Fill already computes price/fee correctly via MAKER_FEE_RATE
+            # inside match_limit_order - don't recompute, just use it.
             portfolio.process_fill(PortfolioFill(
-                symbol=signal.symbol, side=signal.action, quantity=fill_quantity,
-                price=fill_price, fee=fee, timestamp=occurred_at,
+                symbol=signal.symbol, side=signal.action, quantity=fill.quantity,
+                price=fill.price, fee=fill.fee, timestamp=occurred_at,
             ))
-            strategy.record_fill(action=signal.action, quantity=fill_quantity)
+            strategy.record_fill(action=signal.action, quantity=fill.quantity)
 
         portfolio.record_equity_snapshot(occurred_at, {symbol: candle.close})
 

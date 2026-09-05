@@ -40,3 +40,39 @@ the same 60s decision cadence isn't a structural handicap here - it's
 
 the intended operating speed.
 
+\## Update: Window 2 Validation (12h, independent capture)
+
+
+
+| | Window 1 (8h) | Window 2 (12h) |
+
+|---|---|---|
+
+| Return | +0.27% | -0.87% |
+
+| Win rate | 45.5% | 40.9% |
+
+
+
+\*\*Result did not replicate.\*\* Window 1's positive result does not hold
+
+in an independent second window - mean reversion lost money in window
+
+2, worse than the baseline lost in the same window.
+
+
+
+\## Revised, honest conclusion
+
+
+
+Neither BaselineMarketMaker nor MeanReversionStrategy has demonstrated
+
+reliable profitability against real ADA order-book depth across two
+
+independent windows. This is exactly the outcome the two-window check
+
+exists to catch - a single-window "promising" result that doesn't
+
+replicate is a false positive, not a real finding.
+
